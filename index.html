@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evolution COVID-19 par jour en France</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="bundle.js"></script>
+</head>
+
+<body>
+    <h1 style="text-align: center;">Evolution COVID-19 par jour en France</h1>
+    <div style="display: flex; flex-direction: row;">
+        <div style="flex: 1;">
+            <div>
+                <input type="radio" id="total" name="type" value="total" onclick="refresh()">
+                <label for="total">Total</label>
+            </div>
+            <div>
+                <input type="radio" id="gradient" name="type" value="gradient" onclick="refresh()" checked>
+                <label for="gradient">Gradient</label>
+            </div>
+        </div>
+        <div style="flex: 1;">
+            <label for="dept">Departement</label>
+            <input type="text" id="dept" name="dept" value="" oninput="refresh()"></input>
+        </div>
+    </div>
+
+    <canvas id="myChart"></canvas>
+    
+    <script>
+        function refresh() {
+            if (window.data) {
+                let dept = document.getElementById("dept").value
+                let res = getFiltered(window.data, dept)
+                let data = res.res
+
+                let delta = document.getElementById("gradient").checked
+
+
+                console.log(dept)
+
+                let hosp = data.map(it => it[0])
+                let rea = data.map(it => it[1])
+                let rad = data.map(it => it[2])
+                let dc = data.map(it => it[3])
+
+                var dHosp = [0]
+                var dRea = [0]
+                var dRad = [0]
+                var dDc = [0]
+
+                for (var i = 1; i < res.dates.length; i++) {
+                    dHosp.push(hosp[i] - hosp[i - 1])
+                    dRea.push(rea[i] - rea[i - 1])
+                    dRad.push(rad[i] - rad[i - 1])
+                    dDc.push(dc[i] - dc[i - 1])
+                }
+
+                if (delta) {
+                    hosp = dHosp
+                    rea = dRea
+                    rad = dRad
+                    dc = dDc
+                }
+
+                var chartData = {
+                    labels: res.dates,
+                    datasets: [{
+                        label: 'Hospitalisations',
+                        borderColor: 'blue',
+                        data: hosp
+                    }, {
+                        label: 'Réanimations',
+                        borderColor: '#FFA500',
+                        data: rea
+                    }, {
+                        label: 'Retours',
+                        borderColor: 'rgb(0, 255, 0)',
+                        data: rad
+                    }, {
+                        label: 'Décès',
+                        borderColor: 'rgb(255, 0, 0)',
+                        data: dc
+                    }]
+                }
+                console.log(chartData)
+
+                var ctx = document.getElementById('myChart').getContext('2d');
+
+                if (window.chart == null) {
+                    window.chart = new Chart(ctx, {
+                        // The type of chart we want to create
+                        type: 'line',
+
+                        // The data for our dataset
+                        data: chartData,
+
+                        // Configuration options go here
+                        options: {}
+                    });
+                } else {
+                    window.chart.data = chartData
+                    window.chart.update()
+                }
+            }
+        }
+
+        fetch("https://www.data.gouv.fr/fr/datasets/r/63352e38-d353-4b54-bfd1-f1b3ee1cabd7")
+            .then(res => res.text())
+            .then(res => parseCsv(res))
+            .then(res => {
+                window.data = res
+                refresh()
+            })
+
+    </script>
+</body>
+
+</html>

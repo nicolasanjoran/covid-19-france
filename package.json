@@ -1,0 +1,17 @@
+{
+  "name": "covid-19-gradient",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "csv": "^5.3.2",
+    "csv-parse": "^4.8.8",
+    "node-fetch": "^2.6.0"
+  }
+}
