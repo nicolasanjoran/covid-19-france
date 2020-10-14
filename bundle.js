@@ -13,7 +13,7 @@ async function parseCsv(data) {
 
 
 function filterCsv(csv, dept) {
-    csv = csv.filter(row => row[1] == "0")
+    csv = csv.filter(row => row[1] == "0" && !["2020-06-26", "2020-06-27","2020-06-28","2020-06-29","2020-06-30"].includes(row[2]))
     departements = new Set(csv.map(it => it[0]))
     if (dept) {
         csv = csv.filter(row => row[0] == dept)
