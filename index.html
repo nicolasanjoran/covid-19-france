@@ -14,11 +14,11 @@
     <div style="display: flex; flex-direction: row;">
         <div style="flex: 1;">
             <div>
-                <input type="radio" id="total" name="type" value="total" onclick="refresh()">
+                <input type="radio" id="total" name="type" value="total" onclick="refresh()" checked>
                 <label for="total">Total</label>
             </div>
             <div>
-                <input type="radio" id="gradient" name="type" value="gradient" onclick="refresh()" checked>
+                <input type="radio" id="gradient" name="type" value="gradient" onclick="refresh()">
                 <label for="gradient">Gradient</label>
             </div>
         </div>
@@ -82,12 +82,14 @@
                         label: 'Retours',
                         borderColor: 'rgb(0, 255, 0)',
                         lineTension:0,
-                        data: rad
+                        data: rad,
+                        hidden: true
                     }, {
                         label: 'Décès',
                         borderColor: 'rgb(255, 0, 0)',
                         lineTension:0,
-                        data: dc
+                        data: dc,
+                        hidden: true
                     }]
                 }
                 console.log(chartData)
